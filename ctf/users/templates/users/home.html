@@ -1,0 +1,76 @@
+{% extends 'challenges/base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/home.css' %}">
+{% endblock %}
+{% block content %}
+    <h1>Welcome to HM-CTF</h1>
+    <canvas id="rankingChart" width="900rem" height="400rem"></canvas>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in teams %}
+                    <tr>
+                      <th scope="row" class="rankNumber">1</th>
+                      <td>{{ team.name }}</td>
+                      <td>{{ team.points}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var rankList = document.getElementsByClassName('rankNumber');
+        for (var i = 0; i < rankList.length; i++) {
+            rankList[i].innerHTML = parseInt(rankList[i].innerHTML) + i
+        }
+
+    </script>
+
+<!--    <script src="ctf/node_modules/chart.js/dist/Chart.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script>
+    var tmpQuerySet = {{ teams_json | safe }}
+    var teamNames = [];
+    for (var i = 0; i<tmpQuerySet.length; i++) {
+        teamNames.push(tmpQuerySet[i].name)
+    }
+
+    var teamPoints = [];
+    for (var i = 0; i<tmpQuerySet.length; i++) {
+        teamPoints.push(tmpQuerySet[i].points)
+    }
+
+
+    var ctx = document.getElementById('rankingChart');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: teamNames,
+            datasets: [{
+                label: 'Points per Team',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: teamPoints
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+
+    </script>
+{% endblock content %}

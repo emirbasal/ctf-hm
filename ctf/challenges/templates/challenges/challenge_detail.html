@@ -1,0 +1,26 @@
+{% extends 'challenges/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="form-group">
+        <div class="col-md-10">
+            <h2 style="text-decoration: underline;">{{ challenge.title }}</h2>
+        </div>
+        <div class="col-md-10">
+            <p>{{ challenge.description }}</p>
+        </div>
+            <div class="col-md-5">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        {{ form | crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-info" type="submit">Flagge abgeben</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <script>
+
+    </script>
+{% endblock content %}

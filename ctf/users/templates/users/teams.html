@@ -1,0 +1,15 @@
+{% extends 'challenges/base.html' %}
+{% load static %}
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/teams.css' %}">
+{% endblock %}
+{% block content %}
+    {% for team in teams %}
+        <ul class="list-group">
+            <li class="list-group-item active"><h2>{{team.name}}</h2></li>
+            {% for user in team.user_set.all %}
+                <li class="list-group-item">{{user.username}}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}
