@@ -11,7 +11,7 @@ class RegistrationForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
-class LoginAndRegisterTeamForm(forms.ModelForm):
+class RegisterTeamForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
@@ -19,4 +19,6 @@ class LoginAndRegisterTeamForm(forms.ModelForm):
         fields = ('name', 'password')
 
 
+class JoinTeamForm(forms.Form):
+    submitted_password = forms.CharField(widget=forms.PasswordInput(), label='Password')
 

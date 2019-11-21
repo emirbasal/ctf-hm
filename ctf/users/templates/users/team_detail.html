@@ -2,26 +2,30 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'users/teams.css' %}">
 {% endblock %}
 {% block content %}
-    {% if user.team == None %}
-        <div class="row" id="buttons">
-            <div class="col">
-                <button type="button" class="btn btn-danger btn-lg btn-block btn-huge" data-toggle="modal"
-                        data-target="#createTeamModal">Team erstellen
-                </button>
-            </div>
+    <div class="row">
+        <div class="col-lg-5">
+            <h1>{{ team.name }}</h1>
         </div>
 
-        <!-- Modal-->
+
+        {% if user.team == None %}
+        <div class="col">
+             <button type="button" class="btn btn-danger btn-lg btn-huge float-right" data-toggle="modal"
+                    data-target="#joinTeamModal"><i class="fa fa-plus"></i>
+            </button>
+        </div>
+
         <form method="POST">
-            <div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog" aria-labelledby="createTeamModalTitle" aria-hidden="true">
+            <div class="modal fade" id="joinTeamModal" tabindex="-1" role="dialog" aria-labelledby="joinTeamModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
 
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createTeamModal">Team erstellen</h5>
+                            <h5 class="modal-title" id="createTeamModal">Team beitreten</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -34,23 +38,27 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-info" >Team erstellen</button>
+                            <button type="submit" class="btn btn-info" >Team beitreten</button>
                         </div>
                     </div>
 
                 </div>
             </div>
         </form>
-    {% endif %}
 
-    {% for team in teams %}
-        <ul class="list-group">
-            <a href="{% url 'team_detail' team.id %}">
-                <li class="list-group-item active"><h2>{{team.name}}</h2></li>
-            </a>
-            {% for user in team.user_set.all %}
-                <li class="list-group-item">{{user.username}}</li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+
+        {% endif %}
+    </div>
+
+
+<!--    <form method="POST">-->
+<!--        {% csrf_token %}-->
+<!--        <fieldset>-->
+<!--            {{ form | crispy }}-->
+<!--        </fieldset>-->
+<!--        <div class="form-group">-->
+<!--            <button class="btn btn-info" type="submit">Team beitreten</button>-->
+<!--        </div>-->
+<!--    </form>-->
+
 {% endblock %}
