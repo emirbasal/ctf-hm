@@ -49,7 +49,7 @@ class ChallengeListView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class ChallengeDetailFlag(SingleObjectMixin, FormView):
+class ChallengeDetailFormView(SingleObjectMixin, FormView):
     template_name = 'challenges/challenge_detail.html'
     form_class = ChallengeDetailForm
     model = Challenge
@@ -90,7 +90,7 @@ class ChallengeDetailFlag(SingleObjectMixin, FormView):
         team.save()
 
 
-class ChallengeDetailDisplay(DetailView):
+class ChallengeDetailDetailView(DetailView):
     model = Challenge
 
     def get_context_data(self, **kwargs):
@@ -104,10 +104,10 @@ class ChallengeDetailDisplay(DetailView):
 class ChallengeDetail(View):
 
     def get(self, request, *args, **kwargs):
-        view = ChallengeDetailDisplay.as_view()
+        view = ChallengeDetailDetailView.as_view()
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        view = ChallengeDetailFlag.as_view()
+        view = ChallengeDetailFormView.as_view()
         return view(request, *args, **kwargs)
 

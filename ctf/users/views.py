@@ -38,7 +38,7 @@ def user_profile(request):
     return render(request, 'users/profile.html')
 
 
-class TeamListViewRanking(ListView):
+class TeamsRankingListView(ListView):
     model = Team
     template_name = 'users/home.html'
 
@@ -55,7 +55,7 @@ class TeamListViewRanking(ListView):
         return context
 
 
-class TeamsOverview(ListView):
+class TeamsSummaryListView(ListView):
     model = Team
     template_name = 'users/teams.html'
 
