@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseRedirect
+from django.views.generic import ListView, FormView, View, CreateView
+from django.urls import reverse
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
 from django.http import JsonResponse
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from django.views.generic import ListView
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginAndRegisterTeamForm
 from .models import Team
 
 
@@ -55,16 +57,18 @@ class TeamsRankingListView(ListView):
         return context
 
 
-class TeamsSummaryListView(ListView):
+class TeamsSummaryListAndCreateView(LoginRequiredMixin, CreateView):
     model = Team
+    form_class = LoginAndRegisterTeamForm
     template_name = 'users/teams.html'
+    success_url = 'teams'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.user_set.add(self.request.user)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['teams'] = Team.objects.all()
-
         return context
-    #
-    #     for team in context['teams']:
-    #         user_list_in_team = team.user_set.all()
-    #
