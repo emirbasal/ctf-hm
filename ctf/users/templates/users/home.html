@@ -40,28 +40,28 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
 <script>
-    var tmpQuerySet = {{ teams_json | safe }}
-    var teamNames = [];
-    for (var i = 0; i<tmpQuerySet.length; i++) {
-        teamNames.push(tmpQuerySet[i].name)
-    }
+<!--    var tmpQuerySet = {{ teams_json | safe }}-->
+<!--    var teamNames = [];-->
+<!--    for (var i = 0; i<tmpQuerySet.length; i++) {-->
+<!--        teamNames.push(tmpQuerySet[i].name)-->
+<!--    }-->
 
-    var teamPoints = [];
-    for (var i = 0; i<tmpQuerySet.length; i++) {
-        teamPoints.push(tmpQuerySet[i].points)
-    }
+<!--    var teamPoints = [];-->
+<!--    for (var i = 0; i<tmpQuerySet.length; i++) {-->
+<!--        teamPoints.push(tmpQuerySet[i].points)-->
+<!--    }-->
 
 
     var ctx = document.getElementById('rankingChart');
     var chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: teamNames,
+            labels: [{% for team in teams %}"{{team.name}}",{% endfor %}],
             datasets: [{
                 label: 'Points per Team',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: teamPoints
+                data: [{% for team in teams %}{{team.points}},{% endfor %}]
             }]
         },
 

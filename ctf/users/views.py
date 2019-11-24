@@ -36,7 +36,6 @@ def user_register(request):
 
 @login_required
 def user_profile(request):
-    #HIer muss nichts übergeben werden. Die Daten des angemeldeten Users sind immer verfügbar
     return render(request, 'users/profile.html')
 
 
@@ -48,12 +47,7 @@ class TeamsRankingListView(ListView):
         context = super().get_context_data(**kwargs)
         context['teams'] = Team.objects.order_by('-points').values()
         context['teams_json'] = json.dumps(list(context['teams']), cls=DjangoJSONEncoder)
-        # context_json = json.dumps(context, cls=DjangoJSONEncoder)
 
-        # for team in context['teams']:
-        #     self.calculate_points_for_team(team)
-
-        # return JsonResponse(context, safe=True)
         return context
 
 

@@ -31,14 +31,19 @@
                                 </button>
                         </div>
                         <div class="modal-body">
+                            <div class="form-group">
+                                <label>Team</label>
+                                <input class="form-control" type="text" placeholder="{{ team.name }}" readonly>
+                            </div>
+
                             {% csrf_token %}
                             <fieldset>
                                 {{ form | crispy }}
                             </fieldset>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-info" >Team beitreten</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
 
