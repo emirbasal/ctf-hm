@@ -4,7 +4,7 @@ from django.db import models
 class ChallengeType(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=100, blank=True)
-    points = models.PositiveSmallIntegerField(default=0)
+    points = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
