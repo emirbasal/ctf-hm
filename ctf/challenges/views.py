@@ -1,28 +1,24 @@
-from django.shortcuts import render
 from django.urls import reverse
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.views.generic import FormView, View, ListView, DetailView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
-from django.http import HttpResponseForbidden
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from .models import Challenge, ChallengeType
+# from users.models import TeamsChart
 from .forms import ChallengeDetailForm
-
-# from users.models import Team, User
-from django.http import HttpResponse
+from users.models import Team, User
 
 
-# def home(request):
-#     context = {
-#         'users': User.objects.all(),
-#         'teams': Team.objects.all(),
-#         # 'points': Team.objects.all().count('points')
-#     }
-#
-#     return render(request, 'challenges/home.html', context)
+class TeamsChart:
+    times_of_submitted_flags = []
+    teams_dict = {}
+
+
+line_chart = TeamsChart()
 
 
 class ChallengeListView(ListView):
@@ -39,7 +35,6 @@ class ChallengeListView(ListView):
             points_sum = tmp_list.aggregate(sum=Sum('points'))['sum']
             if points_sum is None:
                 points_sum = 0
-
             challenge_type.points = points_sum
 
             #Sollte nicht immer bei dem aufruf gespeichert werden TODO:Change
@@ -56,7 +51,11 @@ class ChallengeDetailFormView(SingleObjectMixin, FormView):
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseForbidden()
+            raise PermissionDenied()
+
+        if request.user.team is None:
+            messages.warning(request, 'You are not in a team. Join a team to submit flags')
+            raise PermissionDenied('You are not in a team. Join a team to submit flags')
 
         if request.user.team.done_challenges.filter(id=self.get_object().id).exists():
             messages.warning(request, 'This challenge was already successfully completed')
@@ -67,9 +66,11 @@ class ChallengeDetailFormView(SingleObjectMixin, FormView):
         submitted_flag = request.POST['submitted_flag']
         if solution_flag == submitted_flag:
             request.user.points += self.object.points
+            #TODO Maybe challenge in done challenges vom user auch hinzufügen
             request.user.team.done_challenges.add(self.object)
             request.user.save()
             self.calculate_points_for_team(request.user.team)
+            self.update_line_chart()
 
             messages.success(request, 'Submitted flag is right. Congratulations')
         else:
@@ -89,6 +90,15 @@ class ChallengeDetailFormView(SingleObjectMixin, FormView):
         team.points = points_sum
         team.save()
 
+    @staticmethod
+    def update_line_chart():
+        line_chart.times_of_submitted_flags.append(timezone.now())
+        list_of_teams = Team.objects.all()
+        for team in list_of_teams:
+            if team.name not in line_chart.teams_dict:
+                line_chart.teams_dict[team.name] = []
+            line_chart.teams_dict[team.name].append(team.points)
+
 
 class ChallengeDetailDetailView(DetailView):
     model = Challenge
@@ -100,7 +110,6 @@ class ChallengeDetailDetailView(DetailView):
         return context
 
 
-# @login_required
 class ChallengeDetail(View):
 
     def get(self, request, *args, **kwargs):
@@ -110,4 +119,3 @@ class ChallengeDetail(View):
     def post(self, request, *args, **kwargs):
         view = ChallengeDetailFormView.as_view()
         return view(request, *args, **kwargs)
-

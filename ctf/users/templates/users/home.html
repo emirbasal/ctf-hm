@@ -40,29 +40,28 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
 <script>
-<!--    var tmpQuerySet = {{ teams_json | safe }}-->
-<!--    var teamNames = [];-->
-<!--    for (var i = 0; i<tmpQuerySet.length; i++) {-->
-<!--        teamNames.push(tmpQuerySet[i].name)-->
-<!--    }-->
 
-<!--    var teamPoints = [];-->
-<!--    for (var i = 0; i<tmpQuerySet.length; i++) {-->
-<!--        teamPoints.push(tmpQuerySet[i].points)-->
-<!--    }-->
-
+    var randomRGBColor = function() {
+        var o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    };
 
     var ctx = document.getElementById('rankingChart');
     var chart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
-            labels: [{% for team in teams %}"{{team.name}}",{% endfor %}],
-            datasets: [{
-                label: 'Points per Team',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [{% for team in teams %}{{team.points}},{% endfor %}]
-            }]
+            labels: [{% for time in line_chart.times_of_submitted_flags %}"{{ time }}",{% endfor %}],
+            datasets: [
+                {% for team, points in line_chart.teams_dict.items %}
+                    {
+                        label: '{{ team }}',
+                        fill: false,
+                        backgroundColor: 'rgb(54, 162, 235)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        data: [{% for point in points %}{{ point }},{% endfor %}]
+                    },
+                {% endfor %}
+            ]
         },
 
         // Configuration options go here

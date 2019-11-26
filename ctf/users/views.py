@@ -12,6 +12,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import RegistrationForm, RegisterTeamForm, JoinTeamForm
 from .models import Team
+from challenges.views import line_chart
 
 
 def user_register(request):
@@ -47,6 +48,7 @@ class TeamsRankingListView(ListView):
         context = super().get_context_data(**kwargs)
         context['teams'] = Team.objects.order_by('-points').values()
         context['teams_json'] = json.dumps(list(context['teams']), cls=DjangoJSONEncoder)
+        context['line_chart'] = line_chart
 
         return context
 
