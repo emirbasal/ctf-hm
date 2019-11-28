@@ -1,21 +1,21 @@
 {% extends 'challenges/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
-
-    <div class="container">
-<!--        <div class="card" >-->
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset>
-                    <legend class="border-bottom-mb-4">Log in</legend>
-                    {{ form | crispy }}
-                </fieldset>
-                <div class="form-group">
+    <form method="POST" style="margin-top: 2rem;">
+        {% csrf_token %}
+        <fieldset>
+            <legend class="border-bottom-mb-4">Log in</legend>
+            {{ form | crispy }}
+        </fieldset>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
                     <button class="btn btn-info" type="submit">Anmelden</button>
                 </div>
-            </form>
-<!--        </div>-->
-    </div>
-
+                <div class="col" align="right">
+                    <p><small>Don't have an account? <a href="{% url 'register'%}"> Sign up</a></small></p>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock content %}
