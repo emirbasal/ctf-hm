@@ -37,7 +37,9 @@ def user_register(request):
 
 @login_required
 def user_profile(request):
-    return render(request, 'users/profile.html')
+    context = dict()
+    context['headline'] = request.user.username
+    return render(request, 'users/profile.html', context)
 
 
 class TeamsRankingListView(ListView):
@@ -46,6 +48,7 @@ class TeamsRankingListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headline'] = 'Home'
         context['teams'] = Team.objects.order_by('-points').values()
         context['teams_json'] = json.dumps(list(context['teams']), cls=DjangoJSONEncoder)
         context['line_chart'] = line_chart
@@ -66,6 +69,7 @@ class TeamsSummaryListAndCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headline'] = 'Teams'
         context['teams'] = Team.objects.all()
         return context
 
@@ -76,7 +80,9 @@ class TeamDetailDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headline'] = self.get_object().name
         context['form'] = JoinTeamForm()
+        context['team_member'] = self.get_object().user_set.order_by('points')
         return context
 
 

@@ -28,6 +28,7 @@ class ChallengeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headline'] = 'Challenges'
         context['challenge_types'] = ChallengeType.objects.all()
 
         for challenge_type in context['challenge_types']:
@@ -105,6 +106,7 @@ class ChallengeDetailDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headline'] = self.get_object().title
         context['form'] = ChallengeDetailForm()
         # challenge.team_set.all()
         return context

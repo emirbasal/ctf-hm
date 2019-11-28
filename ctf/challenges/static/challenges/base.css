@@ -1,0 +1,22 @@
+body { padding-top: 70px; }
+@media screen and (max-width: 768px) {
+    body { padding-top: 0px; }
+}
+
+#headline {
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.jumbotron {
+    margin-bottom: 0;
+    padding: 1rem;
+}
+
+.navbar a {
+    font-size: 1.3rem !important;
+}
+
+.navbar .navbar-brand {
+    font-size: 1.6rem !important;
+}

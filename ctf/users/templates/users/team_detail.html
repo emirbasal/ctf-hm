@@ -3,67 +3,168 @@
 {% load crispy_forms_tags %}
 {% block extrahead %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'users/teams.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/team_detail.css' %}">
 {% endblock %}
-{% block content %}
-    <div class="row">
-        <div class="col-lg-5">
-            <h1>{{ team.name }}</h1>
-        </div>
+{% block extra_content_in_jumbotron %}
+    <h3 align="center" style="color: white">{{team.points}} Points </h3>
+    {% if user.team == None %}
+            <div style="text-align: center;">
+                <button type="button" class="btn btn-danger btn-lg btn-huge text-center" data-toggle="modal"
+                        data-target="#joinTeamModal">Join
+                </button>
+            </div>
 
+            <form method="POST">
+                <div class="modal fade" id="joinTeamModal" tabindex="-1" role="dialog"
+                     aria-labelledby="joinTeamModalTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
 
-        {% if user.team == None %}
-        <div class="col">
-             <button type="button" class="btn btn-danger btn-lg btn-huge float-right" data-toggle="modal"
-                    data-target="#joinTeamModal"><i class="fa fa-plus"></i>
-            </button>
-        </div>
-
-        <form method="POST">
-            <div class="modal fade" id="joinTeamModal" tabindex="-1" role="dialog" aria-labelledby="joinTeamModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createTeamModal">Team beitreten</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Team</label>
-                                <input class="form-control" type="text" placeholder="{{ team.name }}" readonly>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="createTeamModal">Team beitreten</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                             </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Team</label>
+                                    <input class="form-control" type="text" placeholder="{{ team.name }}" readonly>
+                                </div>
 
-                            {% csrf_token %}
-                            <fieldset>
-                                {{ form | crispy }}
-                            </fieldset>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-info" >Team beitreten</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {% csrf_token %}
+                                <fieldset>
+                                    {{ form | crispy }}
+                                </fieldset>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-info" >Team beitreten</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
-
                 </div>
+            </form>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div id="canvas-holder_member" style="width:80%">
+                <h3 align="center">Score of members</h3>
+                <canvas id="memberScore"></canvas>
             </div>
-        </form>
-
-
-        {% endif %}
+        </div>
+        <div class="col">
+            <div id="canvas-holder_challenges" style="width:80%">
+                <h3 align="center">Points of done challenges</h3>
+                <canvas id="pointsOfChallenges"></canvas>
+            </div>
+        </div>
     </div>
+    <table class="table table-striped">
+        <caption align="top">Member</caption>
+        <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in team.user_set.all %}
+                <tr>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.points}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-striped">
+        <caption>Done Challenges</caption>
+        <thead>
+            <tr>
+                <th scope="col">Challenge</th>
+                <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in team.done_challenges.all %}
+                <tr>
+
+                        <td><a href="{% url 'challenge_detail' challenge.id %}">{{challenge.title }} </a></td>
+
+                  <td>{{ challenge.points}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script>
+     var randomRGBColor = function() {
+        var o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    };
+
+    var ctx = document.getElementById('memberScore');
+	window.myPie = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    {% for member in team_member %}{{ member.points }},{% endfor %}
+                ],
+                backgroundColor: [
+                    {% for member in team_member %}
+                        randomRGBColor(),
+                    {% endfor %}
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                {% for member in team_member%}'{{ member.username }}',{% endfor %}
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'bottom',
+            }
+        }
+    });
+
+    var ctx = document.getElementById('pointsOfChallenges');
+	window.myPie = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    {% for challenge in team.done_challenges.all %}{{challenge.points}},{%endfor%}
+                ],
+                backgroundColor: [
+                    {% for challenge in team.done_challenges.all %}
+                        randomRGBColor(),
+                    {% endfor %}
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+               {% for challenge in team.done_challenges.all %}'{{challenge.title}}',{%endfor%}
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'bottom',
+            }
+        }
+    });
 
 
-<!--    <form method="POST">-->
-<!--        {% csrf_token %}-->
-<!--        <fieldset>-->
-<!--            {{ form | crispy }}-->
-<!--        </fieldset>-->
-<!--        <div class="form-group">-->
-<!--            <button class="btn btn-info" type="submit">Team beitreten</button>-->
-<!--        </div>-->
-<!--    </form>-->
 
+    </script>
 {% endblock %}
