@@ -12,7 +12,7 @@ class ChallengeType(models.Model):
 
 class Challenge(models.Model):
     title = models.CharField(max_length=100, blank=False)
-    description = models.TextField(max_length=100, blank=False)
+    description = models.TextField(max_length=1000, blank=False)
     points = models.PositiveSmallIntegerField(blank=False)
     flag = models.CharField(max_length=200, null=True)
     challenge_type = models.ForeignKey(ChallengeType, on_delete=models.CASCADE)
