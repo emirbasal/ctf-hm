@@ -49,7 +49,9 @@
                 <li class="list-group-item active"><h2>{{team.name}}</h2></li>
             </a>
             {% for user in team.user_set.all %}
-                <li class="list-group-item">{{user.username}}</li>
+                <a href="{% url 'user_detail' user.id %}">
+                    <li class="list-group-item">{{user.username}}</li>
+                </a>
             {% endfor %}
         </ul>
     {% endfor %}

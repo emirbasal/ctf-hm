@@ -74,7 +74,7 @@
         <tbody>
             {% for user in team.user_set.all %}
                 <tr>
-                  <td>{{ user.username }}</td>
+                    <td><a href="{% url 'user_detail' user.id %}">{{ user.username }}</a></td>
                   <td>{{ user.points}}</td>
                 </tr>
             {% endfor %}

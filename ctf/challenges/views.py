@@ -67,7 +67,7 @@ class ChallengeDetailFormView(SingleObjectMixin, FormView):
         submitted_flag = request.POST['submitted_flag']
         if solution_flag == submitted_flag:
             request.user.points += self.object.points
-            #TODO Maybe challenge in done challenges vom user auch hinzufügen
+            request.user.done_challenges.add(self.object)
             request.user.team.done_challenges.add(self.object)
             request.user.save()
             self.calculate_points_for_team(request.user.team)

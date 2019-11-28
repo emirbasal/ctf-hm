@@ -11,7 +11,7 @@ from django.http import JsonResponse
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import RegistrationForm, RegisterTeamForm, JoinTeamForm
-from .models import Team
+from .models import Team, User
 from challenges.views import line_chart
 
 
@@ -32,7 +32,6 @@ def user_register(request):
         return render(request, 'users/register.html', {'form': form})
     else:
         return redirect('profile')
-
 
 
 @login_required
@@ -119,3 +118,15 @@ class TeamDetail(View):
     def post(self, request, *args, **kwargs):
         view = TeamDetailFormView.as_view()
         return view(request, *args, **kwargs)
+
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'users/user_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['headline'] = self.get_object().username
+
+        return context
+

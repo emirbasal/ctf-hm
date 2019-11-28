@@ -1,0 +1,31 @@
+{% extends 'challenges/base.html' %}
+{% load static %}
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/team_detail.css' %}">
+{% endblock %}
+{% block extra_content_in_jumbotron %}
+    <h3 align="center" style="color: white">{{user.team.name}}</h3>
+    <h3 align="center" style="color: white">{{user.points}} Points </h3>
+
+{% endblock %}
+
+{% block content %}
+    <table class="table table-striped">
+        <caption>Done Challenges</caption>
+        <thead>
+            <tr>
+                <th scope="col">Challenge</th>
+                <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in user.done_challenges.all %}
+                <tr>
+                    <td><a href="{% url 'challenge_detail' challenge.id %}">{{challenge.title }} </a></td>
+                  <td>{{ challenge.points}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
