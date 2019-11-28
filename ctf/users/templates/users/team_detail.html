@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'users/team_detail.css' %}">
 {% endblock %}
-{% block extra_content_in_jumbotron %}
+{% block jumbotron %}
     <h3 align="center" style="color: white">{{team.points}} Points </h3>
     {% if user.team == None %}
             <div style="text-align: center;">
