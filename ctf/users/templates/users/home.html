@@ -55,8 +55,8 @@
                     {
                         label: '{{ team }}',
                         fill: false,
-                        backgroundColor: 'rgb(54, 162, 235)',
-                        // borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgb(255, 255, 255)',
+                        borderColor: randomRGBColor(),
                         data: [{% for point in points %}{{ point }},{% endfor %}]
                     },
                 {% endfor %}
