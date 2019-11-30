@@ -12,6 +12,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import RegistrationForm, RegisterTeamForm, JoinTeamForm
 from .models import Team, User
+from django.contrib.auth.hashers import check_password
 from challenges.views import line_chart
 
 
@@ -97,7 +98,7 @@ class TeamDetailFormView(SingleObjectMixin, FormView):
         self.object = self.get_object()
         submitted_password = request.POST['submitted_password']
 
-        if submitted_password == self.object.password:
+        if check_password(submitted_password, self.object.password):
             self.object.user_set.add(request.user)
             messages.info(request, 'Team wurde erfolgreich beigetreten')
         else:
