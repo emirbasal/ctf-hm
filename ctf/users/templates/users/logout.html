@@ -1,16 +1,12 @@
 {% extends 'challenges/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container">
-        <fieldset>
-            <legend class="border-bottom-mb-4">Erfolgreich abgemeldet</legend>
-
-        </fieldset>
-        <div class="form-group">
-            <a href="{% url 'login' %}">
-                <button class="btn btn-info" type="submit">Anmelden</button>
-            </a>
-        </div>
+    <div align="center" style="margin-top:25%">
+        <h2>You have been successfully logged out!</h2>
+        <a href="{% url 'login' %}">
+            <button class="btn btn-info" type="submit">Login again</button>
+        </a>
     </div>
+
 
 {% endblock content %}
