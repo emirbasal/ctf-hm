@@ -47,7 +47,6 @@
         Array.from(challenges).forEach((challenge) => {
             done_challenges.forEach((done_challenge) => {
                 if (challenge.id == done_challenge) {
-                    console.log(challenge.id + "," + done_challenge)
                     challenge.classList.add("list-group-item-success");
                 }
             });

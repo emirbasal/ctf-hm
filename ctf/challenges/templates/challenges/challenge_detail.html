@@ -20,8 +20,23 @@
                 {{ form | crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-info" type="submit">Flagge abgeben</button>
+                <button class="btn btn-info" type="submit" id="submitFlag">Flagge abgeben</button>
             </div>
         </form>
     </div>
+
+    <script>
+        var done_challenges = [];
+        {% for done_challenge in request.user.team.done_challenges.all %}
+            done_challenges.push('{{done_challenge.id}}');
+        {% endfor %}
+        done_challenges.forEach((done_challenge) => {
+            if (done_challenge == {{challenge.id}}){
+               document.getElementById('id_submitted_flag').setAttribute('disabled', 'disabled');;
+               document.getElementById('submitFlag').setAttribute('disabled','disabled')
+            }
+        });
+
+
+    </script>
 {% endblock content %}
