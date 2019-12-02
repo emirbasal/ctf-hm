@@ -18,21 +18,42 @@
                 </div>
                 <div id="collapse{{type.id}}" class="collapse hide" aria-labelledby="heading{{type.id}}" data-parent="#accordionExample">
                     <div class="card-body">
-                        {% for challenge in type.challenge_set.all %}
-                            <div class="list-group">
-                                <a href="{% url 'challenge_detail' challenge.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="list-group">
+                            {% for challenge in type.challenge_set.all %}
+                                <a href="{% url 'challenge_detail' challenge.id %}" class="list-group-item
+                                    list-group-item-action flex-column align-items-start" id="{{challenge.id}}">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">{{challenge.title}}</h5>
                                         <small>Schwierigkeit: </small>
                                     </div>
-<!--                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>-->
                                     <p>{{challenge.points}} Punkte</p>
                                 </a>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        var done_challenges = [];
+        {% for done_challenge in request.user.team.done_challenges.all %}
+            done_challenges.push('{{done_challenge.id}}');
+        {% endfor %}
+
+        var challenges = document.getElementsByClassName('list-group-item');
+
+        Array.from(challenges).forEach((challenge) => {
+            done_challenges.forEach((done_challenge) => {
+                if (challenge.id == done_challenge) {
+                    console.log(challenge.id + "," + done_challenge)
+                    challenge.classList.add("list-group-item-success");
+                }
+            });
+        });
+
+
+
+    </script>
 {% endblock content %}
