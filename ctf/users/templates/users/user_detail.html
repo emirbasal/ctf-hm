@@ -4,8 +4,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'users/team_detail.css' %}">
 {% endblock %}
 {% block jumbotron %}
-    <h3 align="center" style="color: white">{{user.team.name}}</h3>
-    <h3 align="center" style="color: white">{{user.points}} Points </h3>
+    <h3 align="center"><a href="{% url 'team_detail' user.team.id %}" style="color: white">{{user.team.name}}</a></h3>
+    <h3 align="center" style="color: white">{{user.points}} Points</h3>
 
 {% endblock %}
 
