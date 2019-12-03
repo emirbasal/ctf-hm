@@ -1,0 +1,11 @@
+{% extends 'challenges/base.html'%}
+{% block content %}
+    <div align="center" style="margin-top:25%">
+        <h2>Your IP-Adress is locked: too many login attempts</h2>
+<!--        <h2>Your IP-Adress has been locked out due to more than 5 login attempts</h2>-->
+        <h3>Please try again in 2 min</h3>
+        <a href="{% url 'login' %}">
+            <button class="btn btn-info" type="submit">Login again</button>
+        </a>
+    </div>
+{% endblock %}
