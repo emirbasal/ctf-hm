@@ -24,7 +24,6 @@ line_chart = TeamsChart()
 class ChallengeListView(ListView):
     model = ChallengeType
     template_name = 'challenges/challenges.html'
-    # context_object_name = 'challenge_types'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,10 +36,6 @@ class ChallengeListView(ListView):
             if points_sum is None:
                 points_sum = 0
             challenge_type.points = points_sum
-
-            #Sollte nicht immer bei dem aufruf gespeichert werden TODO:Change
-            challenge_type.save()
-
         return context
 
 
@@ -56,11 +51,12 @@ class ChallengeDetailFormView(SingleObjectMixin, FormView):
 
         if request.user.team is None:
             messages.warning(request, 'You are not in a team. Join a team to submit flags')
-            raise PermissionDenied('You are not in a team. Join a team to submit flags')
+            raise PermissionDenied('User %s is not in a team. Cant submit flags' % request.user)
 
         if request.user.team.done_challenges.filter(id=self.get_object().id).exists():
             messages.warning(request, 'This challenge was already successfully completed')
-            raise PermissionDenied('This challenge was already successfully completed')
+            raise PermissionDenied('User %s cant submit flag. Team %s already completed challenge' %
+                                   (request.user, request.user.team))
 
         self.object = self.get_object()
         solution_flag = self.object.flag
