@@ -1,7 +1,7 @@
 argon2-cffi==19.2.0
 cffi==1.13.1
 cryptography==2.8
-Django==2.2.6
+Django==2.2.8
 django-appconf==1.0.3
 django-axes==5.0.20
 django-crispy-forms==1.8.0
