@@ -1,3 +1,4 @@
+import os
 from django.urls import reverse
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
@@ -7,8 +8,9 @@ from django.views.generic import FormView, View, ListView, DetailView, TemplateV
 from django.views.generic.detail import SingleObjectMixin
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.conf import settings
+from django.http import HttpResponse, Http404
 from .models import Challenge, ChallengeType
-# from users.models import TeamsChart
 from .forms import ChallengeDetailForm
 from users.models import Team, User
 
@@ -104,6 +106,7 @@ class ChallengeDetailDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['headline'] = self.get_object().title
         context['form'] = ChallengeDetailForm()
+        # context['file'] = self.download(self.request, self.get_object().files.path)
         # challenge.team_set.all()
         return context
 
@@ -117,3 +120,14 @@ class ChallengeDetail(View):
     def post(self, request, *args, **kwargs):
         view = ChallengeDetailFormView.as_view()
         return view(request, *args, **kwargs)
+
+
+def download(request, pk):
+    challenge_file_path = Challenge.objects.get(pk=pk).files.path
+    file_path = os.path.join(settings.MEDIA_ROOT, challenge_file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404

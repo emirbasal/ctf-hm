@@ -21,5 +21,7 @@ from .api import (
 urlpatterns = [
     # path('', views.home, name='home'),
     path('challenges', views.ChallengeListView.as_view(), name='challenges'),
-    path('challenges/<int:pk>', views.ChallengeDetail.as_view(), name='challenge_detail')
+    path('challenges/<int:pk>', views.ChallengeDetail.as_view(), name='challenge_detail'),
+    path('challenges/<int:pk>/file', views.download, name='challenge_file_download')
 ]
+
